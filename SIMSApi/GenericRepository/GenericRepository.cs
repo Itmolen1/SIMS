@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SIMSApi.GenericRepository
 {
-    public class GenericRepository<T> : _GenericInterface<T> where T : class
+    public class GenericRepository<T> : IGenericInterface<T> where T : class
     {
         SIMSContext db;
         private DbSet<T> table;
@@ -43,6 +43,43 @@ namespace SIMSApi.GenericRepository
 
                 throw;
             }
+        }
+
+        public async Task<T> Insert(T entity)
+        {
+            try
+            {
+                if(db != null)
+                {
+                  await table.AddAsync(entity);
+                  await db.SaveChangesAsync();
+                }
+                return entity;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<T> Update(T entity)
+        {
+            try
+            {
+                table.Update(entity);
+                await db.SaveChangesAsync();
+
+                return entity;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public Task<T> Delete(int Id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

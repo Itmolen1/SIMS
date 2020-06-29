@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using SIMSApi.GenericRepository;
 using SIMSApi.Model;
 using SIMSApi.Model.Common;
+using Microsoft.Extensions.Logging;
 
 namespace SIMSApi.Controllers
 {
@@ -15,20 +16,24 @@ namespace SIMSApi.Controllers
     [ApiController]
     public class UserInformationController : ControllerBase
     {
-        private _GenericInterface<UserInformation> repo = null;
-        UserResponseModel userResponseModel;
+        private IGenericInterface<UserInformation> repo = null;
+        private readonly ILogger<UserInformationController> logger;
+            
+       //readonly UserResponseModel userResponseModel;
 
-        public UserInformationController(_GenericInterface<UserInformation> _repo)
+        public UserInformationController(IGenericInterface<UserInformation> _repo, ILogger<UserInformationController> _logger)
         {
             repo = _repo;
+            logger = _logger;
         }
 
         [HttpGet]
-        [Route("GetUsers")]
+        [Route("All")]
         public async Task<IActionResult> GetUsers()
         {
             try
             {
+               logger.LogInformation("Fetching all the User from the Database");
                 var UserList = new List<UserInformation>();
 
                  UserList = await repo.GetAll();
@@ -69,12 +74,13 @@ namespace SIMSApi.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetUser(int Id)
+        [HttpPost]
+        [Route("ById")]
+        public async Task<IActionResult> GetUser(UserInformation userInformation)
         {
             try
             {
-                 var result = await repo.GetEntity(Id);
+                 var result = await repo.GetEntity(userInformation.Id);
                  return Ok(result);
             }
             catch (Exception)
@@ -83,5 +89,34 @@ namespace SIMSApi.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("Add")]
+        public async Task<IActionResult> Insert(UserInformation userInformation)
+        {
+            try
+            {
+              var Data = await repo.Insert(userInformation);
+               return Ok(Data);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [Route("Update")]
+        public async Task<IActionResult> Update(UserInformation userInformation)
+        {
+            try
+            {
+                await repo.Update(userInformation);
+                return Ok(userInformation);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

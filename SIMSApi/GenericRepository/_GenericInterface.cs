@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace SIMSApi.GenericRepository
 {
-    public interface _GenericInterface<T> where T: class {  
+    public interface IGenericInterface<T> where T: class {  
         Task<List<T>> GetAll();
         Task<T> GetEntity(int Id);
-        //void Insert(T entity);
-        //void Update(T entity);
-        //void Delete(T entity);
+        Task<T> Insert(T entity);
+        Task<T> Update(T entity);
+        Task<T> Delete(int Id);
     }  
 }

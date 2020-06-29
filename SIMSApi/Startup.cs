@@ -33,7 +33,7 @@ namespace SIMSApi
                              .AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); 
             services.AddDbContext<SIMSContext>(item => item.UseSqlServer(Configuration.GetConnectionString("SIMSConnection")));
             //services.AddScoped<IPostRepository, PostRepository>();
-            services.AddScoped(typeof(_GenericInterface<>), typeof(GenericRepository<>));
+            services.AddScoped(typeof(IGenericInterface<>), typeof(GenericRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
